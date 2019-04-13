@@ -3,65 +3,62 @@ package com.gameworld;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.gameobjects.Bird;
+import com.helpers.AssetLoader;
 
 public class GameRenderer {
 
     private GameWorld myWorld;
     private OrthographicCamera cam;
     private ShapeRenderer shapeRenderer;
+    private SpriteBatch batcher;
+    private int midPointY;
+    private int gameHeight;
 
-    public GameRenderer(GameWorld world) {
+    public GameRenderer(GameWorld world, int gameHeight, int midPointY) {
         myWorld = world;
+
+        this.gameHeight = gameHeight;
+        this.midPointY = midPointY;
+
         cam = new OrthographicCamera();
-        cam.setToOrtho(true, 136, 204);
+        cam.setToOrtho(true, 136, gameHeight);
+
+        batcher = new SpriteBatch();
+        batcher.setProjectionMatrix(cam.combined);
+
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(cam.combined);
     }
 
-    public void render() {
-        Gdx.app.log("GameRenderer", "render");
-
-        /*
-         * 1. Мы рисуем черный задний фон, чтобы избавится от моргания и следов от передвигающихся объектов
-         */
-
+    public void render(float runTime) {
+        Bird bird = myWorld.getBird();
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        /*
-         * 2. Мы отрисовываем однотонный квадрат
-         */
-
-        // Говорим shapeRenderer начинать отрисовывать формы
         shapeRenderer.begin(ShapeType.Filled);
 
-        // Выбираем RGB Color 87, 109, 120, не прозрачный
-        shapeRenderer.setColor(87 / 255.0f, 109 / 255.0f, 120 / 255.0f, 1);
+        shapeRenderer.setColor(55 / 255.0f, 80 / 255.0f, 100 / 255.0f, 1);
+        shapeRenderer.rect(0, 0, 136, midPointY + 66); //background
 
-        // Отрисовываем квадрат из myWorld (Используем ShapeType.Filled)
-        shapeRenderer.rect(myWorld.getRect().x, myWorld.getRect().y,
-                myWorld.getRect().width, myWorld.getRect().height);
+        shapeRenderer.setColor(111 / 255.0f, 186 / 255.0f, 45 / 255.0f, 1);
+        shapeRenderer.rect(0, midPointY + 66, 136, 11); //grass
 
-        // говорим shapeRenderer прекратить отрисовку
-        // Мы ДОЛЖНЫ каждый раз это делать
-        shapeRenderer.end();
-
-        /*
-         * 3. Мы отрисовываем рамку для квадрата
-         */
-
-        // Говорим shapeRenderer нарисовать рамку следующей формы
-        shapeRenderer.begin(ShapeType.Line);
-
-        // Выбираем цвет RGB Color 255, 109, 120, не прозрачный
-        shapeRenderer.setColor(255 / 255.0f, 109 / 255.0f, 120 / 255.0f, 1);
-
-        // Отрисовываем квадрат из myWorld (Using ShapeType.Line)
-        shapeRenderer.rect(myWorld.getRect().x, myWorld.getRect().y,
-                myWorld.getRect().width, myWorld.getRect().height);
+        shapeRenderer.setColor(147 / 255.0f, 80 / 255.0f, 27 / 255.0f, 1);
+        shapeRenderer.rect(0, midPointY + 77, 136, 52); //dirt
 
         shapeRenderer.end();
+
+        batcher.begin();
+        batcher.disableBlending();
+        batcher.draw(AssetLoader.bg, 0, midPointY + 23, 136, 43); // отмена прозрачности
+        batcher.enableBlending();// прозрачность птицы
+
+        batcher.draw(AssetLoader.birdAnimation.getKeyFrame(runTime), bird.getX(), bird.getY(), bird.getWidth(), bird.getHeight());
+        batcher.end();
+
+
     }
 }
