@@ -17,10 +17,10 @@ public class AssetLoader {
 
     public static void load() {
 
-        texture = new Texture(Gdx.files.internal("assets/texture.png"));
+        texture = new Texture(Gdx.files.internal("data/texture.png"));
         texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 
-        bg = new TextureRegion(texture, 0, 0, 136, 43);
+        bg = new TextureRegion(texture, 0, 0, 136, 43); //43 должно быть
         bg.flip(false, true);
 
         grass = new TextureRegion(texture, 0, 43, 143, 11);

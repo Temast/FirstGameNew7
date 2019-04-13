@@ -15,7 +15,7 @@ public class First extends Game {
 	}
 
 	@Override
-	public void dispose(){
+	public void dispose() {
 		super.dispose();
 		AssetLoader.dispose();
 	}

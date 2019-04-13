@@ -7,8 +7,16 @@ public class InputHandler implements InputProcessor {
 
     private Bird myBird;
 
+    // запрашиваем ссылку на Bird когда InputHandler создан.
     public InputHandler(Bird bird) {
+        // myBird является ссылкой на  bird в gameWorld.
         myBird = bird;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        myBird.onClick();
+        return true; // Вернем true чтобы сообщим, что мы обработали касание.
     }
 
     @Override
@@ -24,12 +32,6 @@ public class InputHandler implements InputProcessor {
     @Override
     public boolean keyTyped(char character) {
         return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        myBird.onClick();
-        return true;
     }
 
     @Override
