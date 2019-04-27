@@ -4,14 +4,14 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.helpers.AssetLoader;
 import com.screens.GameScreen;
+import com.screens.SplashScreen;
 
 
 public class First extends Game {
 	@Override
 	public void create() {
-		Gdx.app.log("ZBGame", "created");
 		AssetLoader.load();
-		setScreen(new GameScreen());
+		setScreen(new SplashScreen(this));
 	}
 
 	@Override

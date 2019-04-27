@@ -1,6 +1,7 @@
 package com.helpers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -12,23 +13,23 @@ public class AssetLoader {
     public static Texture texture;
     public static TextureRegion bg, grass;
 
-    public static Sound dead;
-    public static Sound coin;
-    public static Sound flap;
-
     public static Animation birdAnimation;
     public static TextureRegion bird, birdDown, birdUp;
 
     public static TextureRegion skullUp, skullDown, bar;
 
+    public static Sound dead, flap, coin;
+
     public static BitmapFont font, shadow;
+
+    private static Preferences prefs;
 
     public static void load() {
 
         texture = new Texture(Gdx.files.internal("data/texture.png"));
         texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 
-        bg = new TextureRegion(texture, 0, 0, 136, 43); //43 должно быть
+        bg = new TextureRegion(texture, 0, 0, 136, 43);
         bg.flip(false, true);
 
         grass = new TextureRegion(texture, 0, 43, 143, 11);
@@ -48,7 +49,6 @@ public class AssetLoader {
         birdAnimation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
 
         skullUp = new TextureRegion(texture, 192, 0, 24, 14);
-        // Create by flipping existing skullUp
         skullDown = new TextureRegion(skullUp);
         skullDown.flip(false, true);
 
@@ -56,18 +56,34 @@ public class AssetLoader {
         bar.flip(false, true);
 
         dead = Gdx.audio.newSound(Gdx.files.internal("data/dead.mp3"));
-        flap = Gdx.audio.newSound(Gdx.files.internal("data/flap.wav"));
-        coin = Gdx.audio.newSound(Gdx.files.internal("data/coin.wav"));
+        flap = Gdx.audio.newSound(Gdx.files.internal("data/flap.mp3"));
+        coin = Gdx.audio.newSound(Gdx.files.internal("data/coin.mp3"));
 
         font = new BitmapFont(Gdx.files.internal("data/text.fnt"));
-        //font.getScale(.25f, -.25f);
+        font.getData().setScale(.25f, -.25f);
         shadow = new BitmapFont(Gdx.files.internal("data/shadow.fnt"));
-        //shadow.setScale(.25f, -.25f);
+        shadow.getData().setScale(.25f, -.25f);
+
+        // Получим (или создадим) preferences
+        prefs = Gdx.app.getPreferences("ZombieBird");
+
+        if (!prefs.contains("highScore")) {
+            prefs.putInteger("highScore", 0);
+        }
+    }
+
+    public static void setHighScore(int val) {
+        prefs.putInteger("highScore", val);
+        prefs.flush();
+    }
+
+    public static int getHighScore() {
+        return prefs.getInteger("highScore");
     }
 
     public static void dispose() {
-        // Мы должны избавляться от текстур, когда заканчивает работать с объектом в котором есть текстуры
         texture.dispose();
+
         dead.dispose();
         flap.dispose();
         coin.dispose();

@@ -2,55 +2,68 @@ package com.helpers;
 
 import com.badlogic.gdx.InputProcessor;
 import com.gameobjects.Bird;
+import com.gameworld.GameWorld;
 
 public class InputHandler implements InputProcessor {
+        private Bird myBird;
+        private GameWorld myWorld;
 
-    private Bird myBird;
+        // Запросим ссылку на объект Bird когда InputHandler создан.
+        public InputHandler(GameWorld myWorld) {
+            // myBird это объект Bird в gameWorld.
+            this.myWorld = myWorld;
+            myBird = myWorld.getBird();
+        }
 
-    // запрашиваем ссылку на Bird когда InputHandler создан.
-    public InputHandler(Bird bird) {
-        // myBird является ссылкой на  bird в gameWorld.
-        myBird = bird;
-    }
+        @Override
+        public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        myBird.onClick();
-        return true; // Вернем true чтобы сообщим, что мы обработали касание.
-    }
+            if (myWorld.isReady()) {
+                myWorld.start();
+            }
 
-    @Override
-    public boolean keyDown(int keycode) {
-        return false;
-    }
+            myBird.onClick();
 
-    @Override
-    public boolean keyUp(int keycode) {
-        return false;
-    }
+            if (myWorld.isGameOver() || myWorld.isHighScore()) {
+                // Обнулим все перменные, перейдем в GameState.READ
+                myWorld.restart();
+            }
 
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
+            return true;
+        }
 
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
+        @Override
+        public boolean keyDown(int keycode) {
+            return false;
+        }
 
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
+        @Override
+        public boolean keyUp(int keycode) {
+            return false;
+        }
 
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
+        @Override
+        public boolean keyTyped(char character) {
+            return false;
+        }
 
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
-    }
+        @Override
+        public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+            return false;
+        }
+
+        @Override
+        public boolean touchDragged(int screenX, int screenY, int pointer) {
+            return false;
+        }
+
+        @Override
+        public boolean mouseMoved(int screenX, int screenY) {
+            return false;
+        }
+
+        @Override
+        public boolean scrolled(int amount) {
+            return false;
+        }
 }
